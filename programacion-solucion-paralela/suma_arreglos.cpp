@@ -3,7 +3,7 @@
  * Tarea 1 - Suma de arreglos en paralelo
  * Profesor: Dr. Eduardo Antonio Cendejas Castro <eduardo.cendejas@tec.mx>
  * Autor: Dr. Eduardo Antonio Cendejas Castro <eduardo.cendejas@tec.mx>
- * Autor: Diego Carrera Nicholls <a0046420@tec.mx>
+ * Autor: Diego Carrera Nicholls <a00464290@tec.mx>
  */
 
 #include <iostream>
