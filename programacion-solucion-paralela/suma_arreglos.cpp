@@ -1,3 +1,11 @@
+/**
+ * TC4031.10 Cómputo en la nube
+ * Tarea 1 - Suma de arreglos en paralelo
+ * Profesor: Dr. Eduardo Antonio Cendejas Castro <eduardo.cendejas@tec.mx>
+ * Autor: Dr. Eduardo Antonio Cendejas Castro <eduardo.cendejas@tec.mx>
+ * Autor: Diego Carrera Nicholls <a0046420@tec.mx>
+ */
+
 #include <iostream>
 #include <random>
 #include <chrono>
@@ -7,19 +15,27 @@
 
 using namespace std;
 
+// define el numero de elementos a procesar en cada hilo
 #define chunk 1000
+// define el numero de elementos a mostrar de cada arreglo
 #define mostrar 10
+
+// define el rango de los numeros aleatorios para llenar los arreglos
 #define LO 1000.00
 #define HI 9999.00
 
+
+// definición de la funcion que imprime los primeros 10 elementos de un arreglo
 void imprimeArreglo(float *d);
 
 int main()
 {
+  // valores por defecto
   int N = 257400;
   int SEED = 42;
   int USE_THREADS = 4;
 
+  // pedir al usuario los valores de N, SEED y USE_THREADS
   cout << "Sumando arreglos en Paralelo!" << endl;
   cout << "Nota: Utiliza usleep para demostrar la utilidad de los hilos" << endl;
 
@@ -53,12 +69,15 @@ int main()
     USE_THREADS = std::stoi(threads_input);
   }
 
+  // inicializa el generador de numeros aleatorios con una semilla
   std::mt19937 engine(SEED);
+  // genera numeros aleatorios entre LO y HI
   std::uniform_real_distribution<double> dist(LO, HI);
 
+
+  // inicializa los arreglos
   float a[N], b[N], c[N];
   int i;
-
   for (i = 0; i < N; i++)
   {
     a[i] = dist(engine);
@@ -70,9 +89,16 @@ int main()
     omp_set_num_threads(USE_THREADS);
   }
 
+
+  // utilización de los pragmas de OpenMP para paralelizar el codigo en los hilos
+  // se utiliza la directiva omp parallel for para indicar que se va a paralelizar el ciclo for
+  // se utiliza la directiva shared para indicar que los arreglos a, b y c son compartidos entre los hilos
+  // se utiliza la directiva private para indicar que la variable i es privada para cada hilo
+  // se utiliza la directiva schedule para indicar que se va a usar el algoritmo de particion estatica en bloques de tamaño chunk
+
+  // cada 100 iteraciones se usa usleep para simular un proceso pesado y demostrar la utilidad de los hilos
   int pedazos = chunk;
   auto start = std::chrono::high_resolution_clock::now();
-
   #pragma omp parallel for \
   shared(a, b, c, pedazos) private(i) \
   schedule(static, pedazos)
@@ -85,16 +111,19 @@ int main()
     }
   }
 
+  // calcula la suma de los valores del arreglo c
   double suma = 0.0;
-
   for (i = 0; i < N; i++)
   {
     suma += c[i];
   }
 
+  // calcula el tiempo de ejecucion
   auto end = std::chrono::high_resolution_clock::now();
   auto time = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 
+
+  // impresion de resultados
   cout << endl;
   cout << "Imprimiendo los primeros " << mostrar << " valores de " << (sizeof(a) / sizeof(*a)) << " del arreglo a:" << endl;
   imprimeArreglo(a);
